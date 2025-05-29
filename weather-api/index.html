@@ -17,7 +17,7 @@
   <script>
     async function getWeather() {
       const city = document.getElementById("cityInput").value;
-      const apiKey = "demo"; // เปลี่ยนเป็น API Key จริงจาก OpenWeather (สมัครฟรี)
+      const apiKey = "53ac4b3174c395bfe31abd3f8b5e1e16"; // เปลี่ยนเป็น API Key จริงจาก OpenWeather (สมัครฟรี)
 
       const response = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}&lang=th`
