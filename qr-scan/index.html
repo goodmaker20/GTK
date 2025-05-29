@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QR Code Scanner</title>
+  <link rel="stylesheet" href="../style.css">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+  <h1>📷 สแกน QR Code</h1>
+  <div id="qr-reader" style="width: 300px; margin: auto;"></div>
+  <p id="qr-result" style="margin-top: 20px;"></p>
+  <p><a href="../projects.html">⬅️ กลับ</a></p>
+
+  <script>
+    const result = document.getElementById("qr-result");
+
+    function onScanSuccess(decodedText, decodedResult) {
+      result.innerHTML = `✅ ได้ผลลัพธ์: ${decodedText}`;
+    }
+
+    const html5QrCode = new Html5Qrcode("qr-reader");
+    Html5Qrcode.getCameras().then(cameras => {
+      if (cameras && cameras.length) {
+        html5QrCode.start(
+          cameras[0].id,
+          {
+            fps: 10,
+            qrbox: 250
+          },
+          onScanSuccess
+        );
+      }
+    }).catch(err => {
+      result.innerHTML = `<span style="color:red;">ไม่สามารถเปิดกล้องได้: ${err}</span>`;
+    });
+  </script>
+</body>
+</html>
