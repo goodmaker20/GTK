@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <h1>🌤️ ตรวจสอบสภาพอากาศ</h1>
+  <input type="text" id="cityInput" placeholder="กรอกชื่อเมือง เช่น Bangkok">
+  <button onclick="getWeather()">ดูอากาศ</button>
+
+  <div id="result" style="margin-top: 20px;"></div>
+
+  <p><a href="../projects.html">⬅️ กลับ</a></p>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value;
+      const apiKey = "demo"; // เปลี่ยนเป็น API Key จริงจาก OpenWeather (สมัครฟรี)
+
+      const response = await fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${apiKey}&lang=th`
+      );
+      const data = await response.json();
+
+      if (data.cod === 200) {
+        document.getElementById("result").innerHTML = `
+          <h3>${data.name}</h3>
+          <p>🌡️ อุณหภูมิ: ${data.main.temp} °C</p>
+          <p>☁️ สภาพอากาศ: ${data.weather[0].description}</p>
+        `;
+      } else {
+        document.getElementById("result").innerHTML = `<p style="color:red;">ไม่พบข้อมูล</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
