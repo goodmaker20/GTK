@@ -21,6 +21,19 @@
     #scanned-list li {
       padding: 5px;
       border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .remove-btn {
+      background: red;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      cursor: pointer;
+      font-weight: bold;
     }
     #confirm-btn {
       margin-top: 10px;
@@ -61,10 +74,22 @@
 
     function onScanSuccess(decodedText) {
       if (!scannedItems.has(decodedText)) {
-        scannedItems.add(decodedText);
-        const li = document.createElement("li");
-        li.textContent = decodedText;
-        itemList.appendChild(li);
+        if (confirm(`เพิ่ม \"${decodedText}\" ลงในรายการที่จะยืมหรือไม่?`)) {
+          scannedItems.add(decodedText);
+          const li = document.createElement("li");
+          li.textContent = decodedText;
+
+          const removeBtn = document.createElement("button");
+          removeBtn.textContent = "×";
+          removeBtn.className = "remove-btn";
+          removeBtn.onclick = () => {
+            itemList.removeChild(li);
+            scannedItems.delete(decodedText);
+          };
+
+          li.appendChild(removeBtn);
+          itemList.appendChild(li);
+        }
       }
     }
 
