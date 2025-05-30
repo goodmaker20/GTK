@@ -19,7 +19,12 @@
       border: 1px solid #ccc;
       padding: 10px;
     }
+    #map {
+      height: 300px;
+      margin-top: 20px;
+    }
   </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
   <h1>☀️ ตรวจสอบสภาพอากาศ</h1>
@@ -27,12 +32,28 @@
   <button onclick="getWeatherByCity()">ค้นหา</button>
 
   <div id="weather-result"></div>
+  <div id="map"></div>
 
   <p><a href="../projects.html">⬅️ กลับ</a></p>
 
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>
-    const apiKey = "53ac4b3174c395bfe31abd3f8b5e1e16"; // 🔑 เปลี่ยนเป็น API Key จาก OpenWeatherMap
+    const apiKey = "53ac4b3174c395bfe31abd3f8b5e1e16"; // 🔑 แกไประเบี่ยน API Key จาก OpenWeatherMap
     const weatherResult = document.getElementById("weather-result");
+    let map, marker;
+
+    function displayMap(lat, lon) {
+      if (!map) {
+        map = L.map('map').setView([lat, lon], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a>'
+        }).addTo(map);
+        marker = L.marker([lat, lon]).addTo(map);
+      } else {
+        map.setView([lat, lon], 10);
+        marker.setLatLng([lat, lon]);
+      }
+    }
 
     function displayWeather(data) {
       weatherResult.innerHTML = `
@@ -42,6 +63,7 @@
         <p>💧 ความชื้น: ${data.main.humidity}%</p>
         <p>🌬️ ลม: ${data.wind.speed} m/s</p>
       `;
+      displayMap(data.coord.lat, data.coord.lon);
     }
 
     function getWeatherByCity() {
