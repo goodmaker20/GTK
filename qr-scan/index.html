@@ -9,6 +9,28 @@
     #cameraSelect {
       margin-top: 10px;
     }
+    #scanned-list {
+      margin-top: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+    }
+    #scanned-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    #scanned-list li {
+      padding: 5px;
+      border-bottom: 1px solid #eee;
+    }
+    #confirm-btn {
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: green;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -18,18 +40,32 @@
 
   <select id="cameraSelect"></select>
 
+  <div id="scanned-list">
+    <h3>📦 รายการที่จะยืม:</h3>
+    <ul id="item-list"></ul>
+    <button id="confirm-btn">✅ ยืนยันการยืม</button>
+  </div>
+
   <p id="qr-result" style="margin-top: 20px;"></p>
   <p><a href="../projects.html">⬅️ กลับ</a></p>
 
   <script>
     const resultEl = document.getElementById("qr-result");
     const cameraSelect = document.getElementById("cameraSelect");
+    const itemList = document.getElementById("item-list");
+    const confirmBtn = document.getElementById("confirm-btn");
 
     let html5QrCode;
     let currentCameraId;
+    let scannedItems = new Set();
 
-    function onScanSuccess(decodedText, decodedResult) {
-      resultEl.innerHTML = `✅ ได้ผลลัพธ์: ${decodedText}`;
+    function onScanSuccess(decodedText) {
+      if (!scannedItems.has(decodedText)) {
+        scannedItems.add(decodedText);
+        const li = document.createElement("li");
+        li.textContent = decodedText;
+        itemList.appendChild(li);
+      }
     }
 
     function startScanner(cameraId) {
@@ -77,6 +113,16 @@
       }
     }).catch(err => {
       resultEl.innerHTML = `<span style="color:red;">เกิดข้อผิดพลาด: ${err}</span>`;
+    });
+
+    confirmBtn.addEventListener("click", () => {
+      const items = Array.from(scannedItems);
+      if (items.length === 0) {
+        alert("กรุณาสแกนรายการอย่างน้อย 1 ชิ้นก่อนยืนยัน");
+        return;
+      }
+      alert("คุณได้ยืมของ: \n" + items.join("\n"));
+      // ส่วนนี้สามารถเชื่อม API หรือบันทึกข้อมูลเพิ่มเติมได้
     });
   </script>
 </body>
